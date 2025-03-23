@@ -61,3 +61,5 @@ You can use the private key file to ssh into this EC2 as the public key has been
 
 Run some docker commands to verify docker is ready to use:
 ![img_5.png](./screenshots/img_5.png)
+
+## Use Terraform to provision AWS resources
