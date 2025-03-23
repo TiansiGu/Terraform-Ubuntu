@@ -17,9 +17,9 @@ resource "aws_security_group" "bastion-allow-ssh" {
     cidr_blocks = ["0.0.0.0/0"] //Todo: change to my ip address
   }
 
-  tags = {
-    Name = "bastion-allow-ssh"
-  }
+  tags = merge(
+    var.resource_tags, { Name = "bastion-allow-ssh" }
+  )
 }
 
 resource "aws_security_group" "private-ssh" {
@@ -41,7 +41,8 @@ resource "aws_security_group" "private-ssh" {
     security_groups = [ aws_security_group.bastion-allow-ssh.id ]
   }
 
-  tags = {
-    Name = "private-ssh"
-  }
+  tags = merge(
+    var.resource_tags,
+    { Name = "private-ssh" }
+  )
 }

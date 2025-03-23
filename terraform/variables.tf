@@ -46,6 +46,12 @@ variable "aws_public_subnet_cidr" {
   default     = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
 }
 
+variable "ec2_ami" {
+  description = "AMI used to launch ec2 instances in the private subnet"
+  type        = string
+  default     = "ami-0c683bc83548aa978"
+}
+
 variable "resource_tags" {
   type = object({
     PROJECT = string

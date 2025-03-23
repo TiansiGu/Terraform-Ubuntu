@@ -1,4 +1,14 @@
 # Packer-Terraform
+Clone this repo to your local machine.
+
+## Configure AWS Credentials
+Get your AWS credentials from AWS Academy and export them as environment variables:
+```
+% export AWS_ACCESS_KEY_ID="your aws_access_key_id"
+% export AWS_SECRET_ACCESS_KEY="your aws_secret_access_key"
+% export AWS_SESSION_TOKEN="your aws_session_token"
+```
+
 ## Create a custom AWS AMI using Packer 
 Check if packer is installed on your machine:
 ```
@@ -17,12 +27,7 @@ Clone this repo to your local machine. In the root directory:
 ```
 % cd packer
 ```
-Get your AWS credentials from AWS Academy and export them as environment variables:
-```
-% export AWS_ACCESS_KEY_ID="your aws_access_key_id"
-% export AWS_SECRET_ACCESS_KEY="your aws_secret_access_key"
-% export AWS_SESSION_TOKEN="your aws_session_token"
-```
+
 Create a key pair using Amazon EC2 (You need to have AWS CLI preinstalled):
 ```
 % aws ec2 create-key-pair \
