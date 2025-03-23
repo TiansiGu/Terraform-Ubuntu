@@ -7,7 +7,7 @@
       "instance_type": "t2.micro",
       "ssh_username": "ec2-user",
       "ssh_keypair_name": "ami-key-pair",
-      "ssh_private_key_file":"ami-key-pair.pem",
+      "ssh_private_key_file":"../ami-key-pair.pem",
       "ami_name": "amazon-linux-2023-with-docker {{timestamp}}"
     }
   ],

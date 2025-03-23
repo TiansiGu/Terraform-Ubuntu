@@ -1,3 +1,7 @@
+data "http" "my_ip" {
+  url = "https://api.ipify.org?format=text" // fetch your ip address
+}
+
 resource "aws_security_group" "bastion-allow-ssh" {
   vpc_id      = module.vpc.vpc_id
   name        = "bastion-allow-ssh"
@@ -14,7 +18,7 @@ resource "aws_security_group" "bastion-allow-ssh" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] //Todo: change to my ip address
+    cidr_blocks = ["${data.http.my_ip.response_body}/32"]
   }
 
   tags = merge(

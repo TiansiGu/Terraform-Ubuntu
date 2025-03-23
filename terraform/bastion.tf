@@ -1,5 +1,5 @@
 
-data "aws_ami" "al2923_image" {
+data "aws_ami" "bastion_image" {
   most_recent = true
   owners      = ["amazon"]
   filter {
@@ -9,7 +9,7 @@ data "aws_ami" "al2923_image" {
 }
 
 resource "aws_instance" "bastion" {
-  ami           = data.aws_ami.al2923_image.id
+  ami           = data.aws_ami.bastion_image.id
   instance_type = "t2.micro"
   subnet_id = module.vpc.public_subnets[0] //the first public subnet id in the list
   vpc_security_group_ids = [aws_security_group.bastion-allow-ssh.id]
