@@ -101,7 +101,7 @@ Bastion Host locates in a public subnet, and was created with the newest officia
 
 Out of security, the Bastion Host only allows inbounding SSH traffic from your IP address
 ![img_19.png](./screenshots/img_19.png)
-You can verify your IP address by running `curl -s https://api.ipify.org `:
+You can verify it is your IP address by running `curl -s https://api.ipify.org `:
 ![img_20.png](./screenshots/img_20.png)
 
 ##### Custom EC2
@@ -136,7 +136,8 @@ Once you are inside the bastion host, SSH into your custom ec2 instance in the p
 ```
 Example output:
 ![img_17.png](./screenshots/img_17.png)
-In ec2.tf, no key-pair is associated to the ec2 instance. However, you can still use the private key file to ssh into this EC2 as the public key has been pre-configured in the custom AMI, and thus was pre-set in the ec2
+
+In ec2.tf, no statement associates the key-pair with the ec2 instance. However, you can still use the private key file to ssh into this EC2 as the public key has been pre-configured in the custom AMI, and thus was pre-set in the ec2
 
 Run some docker commands to verify docker is ready to use:
 ![img_18.png](./screenshots/img_18.png)
