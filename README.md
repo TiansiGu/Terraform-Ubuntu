@@ -74,6 +74,7 @@ $ terraform apply
 ```
 After execution, you will see output like this for `terraform apply`:
 ![img_2.png](./screenshots/img_2.png)
+![img_2.2.png](./screenshots/img_2.2.png)
 
 Now you can check the resources terraform just created on your AWS console:
 #### VPC
@@ -90,7 +91,52 @@ IGW, NGW, and Elastic IP associated to the NGW allocated through the creation of
 ![img_9.png](./screenshots/img_9.png)
 ![img_10.png](./screenshots/img_10.png)
 
-You can use the private key file to ssh into this EC2 as the public key has been pre-configured in the AMI, and thus pre-set in the EC2
+#### EC2
+All the ec2 instances launched:
+![img_11.png](./screenshots/img_11.png)
+##### Bastion Host
+Bastion Host locates in a public subnet, and was created with the newest official AMI of Amazon Linux 2023 (provided by Amazon)
+![img_12.png](./screenshots/img_12.png)
+![img_13.png](./screenshots/img_13.png)
 
+Out of security, the Bastion Host only allows inbounding SSH traffic from your IP address
+![img_19.png](./screenshots/img_19.png)
+You can verify your IP address by running `curl -s https://api.ipify.org `:
+![img_20.png](./screenshots/img_20.png)
+
+##### Custom EC2
+Bastion Host locates in a private subnet, and was created with your new AMI created from Packer
+![img_14.png](./screenshots/img_14.png)
+![img_15.png](./screenshots/img_15.png)
+
+All the custom ec2 instances only allows inbounding SSH traffic from the Bastion Host
+![img_21.png](./screenshots/img_21.png)
+![img_22.png](./screenshots/img_22.png)
+
+## SSH into Private EC2 via Bastion Host
+To get the public DNS of the bastion host and the private DNS of the custom ec2 you want to ssh into, you can either find them in AWS console,
+or run in terraform directory:
+```
+terraform output
+```
+Example output:
+![img_16.png](./screenshots/img_16.png)
+
+Add the key in the root directory into SSH agent:
+```
+% ssh-add ami-key-pair.pem
+```
+SSH into the bastion host with agent forwarding:
+```
+% ssh -A -i ami-key-pair.pem ec2-user@[your-bastion-host-public-ipv4-dns]
+```
+Once you are inside the bastion host, SSH into your custom ec2 instance in the private subnet
+```
+% ssh ec2-user@[your-custom-ec2-private-ipv4-dns]
+```
+Example output:
+![img_17.png](./screenshots/img_17.png)
+In ec2.tf, no key-pair is associated to the ec2 instance. However, you can still use the private key file to ssh into this EC2 as the public key has been pre-configured in the custom AMI, and thus was pre-set in the ec2
 
 Run some docker commands to verify docker is ready to use:
+![img_18.png](./screenshots/img_18.png)
