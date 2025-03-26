@@ -1,10 +1,6 @@
-data "http" "my_ip" {
-  url = "https://api.ipify.org?format=text" // fetch your ip address
-}
-
-resource "aws_security_group" "bastion-allow-ssh" {
+resource "aws_security_group" "public-ssh" {
   vpc_id      = module.vpc.vpc_id
-  name        = "bastion-allow-ssh"
+  name        = "public-ssh"
   description = "security group for bastion that allows ssh and all egress traffic"
 
   egress {
@@ -18,11 +14,41 @@ resource "aws_security_group" "bastion-allow-ssh" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["${data.http.my_ip.response_body}/32"]
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # Cluster management communications (TCP port 2377)
+  ingress {
+    from_port   = 2377
+    to_port     = 2377
+    protocol    = "tcp"
+    self = true
+  }
+
+  # Communication among nodes (TCP and UDP port 7946)
+  ingress {
+    from_port   = 7946
+    to_port     = 7946
+    protocol    = "tcp"
+    self = true
+  }
+  ingress {
+    from_port   = 7946
+    to_port     = 7946
+    protocol    = "udp"
+    self = true
+  }
+
+  # Overlay network traffic (UDP port 4789)
+  ingress {
+    from_port   = 4789
+    to_port     = 4789
+    protocol    = "udp"
+    self = true
   }
 
   tags = merge(
-    var.resource_tags, { Name = "bastion-allow-ssh" }
+    var.resource_tags, { Name = "public-ssh" }
   )
 }
 
@@ -42,7 +68,7 @@ resource "aws_security_group" "private-ssh" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    security_groups = [ aws_security_group.bastion-allow-ssh.id ]
+    security_groups = [ aws_security_group.public-ssh.id ]
   }
 
   tags = merge(

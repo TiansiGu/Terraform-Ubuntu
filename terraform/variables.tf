@@ -10,12 +10,6 @@ variable "public_key" {
   description = "The public key to access your bastion server"
 }
 
-variable "bastion_prefix"{
-  type        = string
-  default     = "bastion"
-  description = "Bastion prefix for the bastion resources"
-}
-
 variable "vpc_name"{
   type        = string
   default     = "IaC-vpc"

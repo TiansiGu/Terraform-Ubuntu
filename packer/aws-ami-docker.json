@@ -3,12 +3,12 @@
     {
       "type": "amazon-ebs",
       "region": "us-east-1",
-      "source_ami": "ami-08b5b3a93ed654d19",
+      "source_ami": "ami-0f9de6e2d2f067fca",
       "instance_type": "t2.micro",
-      "ssh_username": "ec2-user",
+      "ssh_username": "ubuntu",
       "ssh_keypair_name": "ami-key-pair",
       "ssh_private_key_file":"../ami-key-pair.pem",
-      "ami_name": "amazon-linux-2023-with-docker {{timestamp}}"
+      "ami_name": "amazon-ubuntu-with-docker {{timestamp}}"
     }
   ],
     "provisioners": [
