@@ -1,3 +1,7 @@
+data "http" "my_ip" {
+  url = "https://api.ipify.org?format=text" // fetch your ip address
+}
+
 resource "aws_security_group" "public-ssh" {
   vpc_id      = module.vpc.vpc_id
   name        = "public-ssh"
@@ -14,7 +18,7 @@ resource "aws_security_group" "public-ssh" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["${data.http.my_ip.response_body}/32"]
   }
 
   # Cluster management communications (TCP port 2377)

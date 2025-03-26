@@ -23,7 +23,7 @@ Install Amazon plugin on packer:
 ```
 % packer plugins install github.com/hashicorp/amazon
 ```
-In the root directory, create a key pair using Amazon EC2 (You need to have AWS CLI preinstalled):
+In the **root directory**, create a key pair using Amazon EC2 (You need to have AWS CLI preinstalled):
 ```
 % aws ec2 create-key-pair \
     --key-name ami-key-pair \
@@ -46,14 +46,6 @@ Create a custom AMI with **docker** and **ssh public key** set up:
 % cd packer
 % packer build aws-ami-docker.json  
 ```
-You will see packer building logs. Once the process is completed, you will see outputs like the following:
-![img.png](./screenshots/img.png)
-
-You will be able to see the AMI with the Id specified in the packer build output in AWS Console:
-![img_1.png](./screenshots/img_1.png)
-
-
-
 
 ## Use Terraform to provision AWS resources
 Check if you already have terraform installed on your machine:
@@ -62,7 +54,6 @@ Check if you already have terraform installed on your machine:
 ```
 If not, run the following commands to install packer:
 ```
-% brew tap hashicorp/tap
 % brew install hashicorp/tap/terraform
 ``` 
 At terraform directory, run the following commands to provision AWS resources
@@ -72,72 +63,34 @@ $ terraform init
 $ terraform plan
 $ terraform apply
 ```
-After execution, you will see output like this for `terraform apply`:
-![img_2.png](./screenshots/img_2.png)
-![img_2.2.png](./screenshots/img_2.2.png)
 
-Now you can check the resources terraform just created on your AWS console:
-#### VPC
-![img_3.png](./screenshots/img_3.png)
-
-Public subnets are connected to the internet through IGW (Internet Gateway, created together with VPC).
-![img_4.png](./screenshots/img_4.png)
-![img_5.png](./screenshots/img_5.png)
-Private subnets can connect to outside through NGW (NAT Gateway, created together with VPC).
-![img_6.png](./screenshots/img_6.png)
-![img_7.png](./screenshots/img_7.png)
-IGW, NGW, and Elastic IP associated to the NGW allocated through the creation of VPC:
-![img_8.png](./screenshots/img_8.png)
-![img_9.png](./screenshots/img_9.png)
-![img_10.png](./screenshots/img_10.png)
-
-#### EC2
-All the ec2 instances launched:
-![img_11.png](./screenshots/img_11.png)
-##### Bastion Host
-Bastion Host locates in a public subnet, and was created with the newest official AMI of Amazon Linux 2023 (provided by Amazon)
-![img_12.png](./screenshots/img_12.png)
-![img_13.png](./screenshots/img_13.png)
-
-Out of security, the Bastion Host only allows inbounding SSH traffic from your IP address
-![img_19.png](./screenshots/img_19.png)
-You can verify it is your IP address by running `curl -s https://api.ipify.org `:
-![img_20.png](./screenshots/img_20.png)
-
-##### Custom EC2
-Bastion Host locates in a private subnet, and was created with your new AMI created from Packer
-![img_14.png](./screenshots/img_14.png)
-![img_15.png](./screenshots/img_15.png)
-
-All the custom ec2 instances only allows inbounding SSH traffic from the Bastion Host
-![img_21.png](./screenshots/img_21.png)
-![img_22.png](./screenshots/img_22.png)
-
-## SSH into Private EC2 via Bastion Host
-To get the public DNS of the bastion host and the private DNS of the custom ec2 you want to ssh into, you can either find them in AWS console,
-or run in terraform directory:
+## SSH into Ubuntu EC2
+To get the public DNS of the ec2 instances, you can either find them in AWS console,
+or run the following command in terraform directory:
 ```
 terraform output
 ```
 Example output:
-![img_16.png](./screenshots/img_16.png)
+```
+ec2_public_dns = [
+  "ec2-18-234-185-106.compute-1.amazonaws.com",
+  "ec2-54-205-91-132.compute-1.amazonaws.com",
+  "ec2-52-207-209-190.compute-1.amazonaws.com",
+  "ec2-44-201-83-118.compute-1.amazonaws.com",
+  "ec2-44-211-144-155.compute-1.amazonaws.com",
+]
+```
 
 Add the key in the root directory into SSH agent:
 ```
 % ssh-add ami-key-pair.pem
 ```
-SSH into the bastion host with agent forwarding:
+SSH into the ec2 instances with agent forwarding:
 ```
-% ssh -A -i ami-key-pair.pem ec2-user@[your-bastion-host-public-ipv4-dns]
+% ssh -i ami-key-pair.pem ubuntu@[your-ec2-public-ipv4-dns]
 ```
-Once you are inside the bastion host, SSH into your custom ec2 instance in the private subnet
-```
-% ssh ec2-user@[your-custom-ec2-private-ipv4-dns]
-```
-Example output:
-![img_17.png](./screenshots/img_17.png)
-
-In ec2.tf, no statement associates the key-pair with the ec2 instance. However, you can still use the private key file to ssh into this EC2 as the public key has been pre-configured in the custom AMI, and thus was pre-set in the ec2
 
 Run some docker commands to verify docker is ready to use:
-![img_18.png](./screenshots/img_18.png)
+```
+docker ps
+```
